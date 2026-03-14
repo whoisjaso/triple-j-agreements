@@ -115,10 +115,11 @@ export default function RentalForm({ data, onChange }: Props) {
         </div>
         <div className="grid grid-cols-2 gap-4">
           <InputField label="VIN" name="vehicleVin" uppercase={true} value={data.vehicleVin} onChange={handleChange} />
-          <div className="grid grid-cols-2 gap-4">
-            <InputField label="Mileage Out" name="mileageOut" value={data.mileageOut} onChange={handleChange} />
-            <InputField label="Mileage In" name="mileageIn" value={data.mileageIn} onChange={handleChange} />
-          </div>
+          <InputField label="License Plate" name="vehiclePlate" uppercase={true} value={data.vehiclePlate} onChange={handleChange} />
+        </div>
+        <div className="grid grid-cols-2 gap-4">
+          <InputField label="Mileage Out" name="mileageOut" value={data.mileageOut} onChange={handleChange} />
+          <InputField label="Mileage In" name="mileageIn" value={data.mileageIn} onChange={handleChange} />
         </div>
         <div className="grid grid-cols-3 gap-4">
           <InputField label="Year" name="vehicleYear" value={data.vehicleYear} onChange={handleChange} />
@@ -176,6 +177,7 @@ export default function RentalForm({ data, onChange }: Props) {
           <InputField label="Add'l Driver Fee ($/period)" name="additionalDriverFee" type="number" min="0" value={data.additionalDriverFee} onChange={handleChange} />
           <InputField label="Tax Rate (%)" name="tax" type="number" step="0.01" min="0" value={data.tax} onChange={handleChange} />
         </div>
+        <InputField label="Total Due at Signing ($)" name="dueAtSigning" type="number" min="0" value={data.dueAtSigning} onChange={handleChange} />
       </motion.div>
     </motion.div>
   );

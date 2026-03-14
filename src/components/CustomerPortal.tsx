@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { motion } from 'motion/react';
-import { FileText, Download, Printer, ArrowLeft, Shield } from 'lucide-react';
+import { FileText, Download, Printer, ArrowLeft, Shield, Send, Copy, Check } from 'lucide-react';
 import html2pdf from 'html2pdf.js';
-import { CustomerLinkData, customerFields } from '../utils/customerPortal';
+import { CustomerLinkData, customerFields, encodeCompletedLink } from '../utils/customerPortal';
 import { ContractData, calculatePayment, formatCurrency as fcFinance } from '../utils/finance';
 import { RentalData, calculateRentalTotal, calculateRentalDuration, formatCurrency as fcRental } from '../utils/rental';
 import { BillOfSaleData, calculateBillOfSale, formatCurrency as fcBos } from '../utils/billOfSale';
@@ -56,6 +56,9 @@ export default function CustomerPortal({ linkData }: Props) {
   });
   const [view, setView] = useState<'fill' | 'preview'>('fill');
   const [downloading, setDownloading] = useState(false);
+  const [showSendModal, setShowSendModal] = useState(false);
+  const [dealerReturnLink, setDealerReturnLink] = useState('');
+  const [copied, setCopied] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -109,6 +112,41 @@ export default function CustomerPortal({ linkData }: Props) {
       await html2pdf().set(opt).from(el).save();
     } finally {
       setDownloading(false);
+    }
+  };
+
+  const handleSendToDealer = () => {
+    const link = encodeCompletedLink(
+      linkData.s,
+      linkData.d,
+      customerData,
+      linkData.ds,
+      linkData.dd,
+      signatures.buyerSignature,
+      signatures.buyerSignatureDate,
+      signatures.coBuyerSignature,
+      signatures.coBuyerSignatureDate,
+      signatures.buyerIdPhoto,
+    );
+    setDealerReturnLink(link);
+    setShowSendModal(true);
+    setCopied(false);
+  };
+
+  const handleCopyReturnLink = async () => {
+    try {
+      await navigator.clipboard.writeText(dealerReturnLink);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 3000);
+    } catch {
+      const textarea = document.createElement('textarea');
+      textarea.value = dealerReturnLink;
+      document.body.appendChild(textarea);
+      textarea.select();
+      document.execCommand('copy');
+      document.body.removeChild(textarea);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 3000);
     }
   };
 
@@ -429,17 +467,86 @@ export default function CustomerPortal({ linkData }: Props) {
         </motion.div>
 
         {/* Actions */}
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="flex justify-center space-x-4 pb-12">
-          <button onClick={() => setView('preview')} className="px-8 py-4 bg-luxury-ink text-luxury-gold rounded-full text-sm font-bold tracking-widest uppercase hover:bg-luxury-ink/90 transition-all shadow-lg flex items-center space-x-2 border border-luxury-gold/30">
-            <FileText size={16} />
-            <span>Preview Document</span>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="flex flex-col items-center space-y-4 pb-12">
+          <div className="flex justify-center space-x-4">
+            <button onClick={() => setView('preview')} className="px-8 py-4 bg-luxury-ink text-luxury-gold rounded-full text-sm font-bold tracking-widest uppercase hover:bg-luxury-ink/90 transition-all shadow-lg flex items-center space-x-2 border border-luxury-gold/30">
+              <FileText size={16} />
+              <span>Preview Document</span>
+            </button>
+            <button onClick={handleDownloadPDF} disabled={downloading} className="px-8 py-4 bg-luxury-gold text-white rounded-full text-sm font-bold tracking-widest uppercase hover:bg-luxury-gold/90 transition-all shadow-lg flex items-center space-x-2 border border-luxury-gold-light disabled:opacity-50">
+              <Download size={16} />
+              <span>{downloading ? 'Generating...' : 'Download PDF'}</span>
+            </button>
+          </div>
+          <button onClick={handleSendToDealer} className="px-8 py-4 bg-green-700 text-white rounded-full text-sm font-bold tracking-widest uppercase hover:bg-green-800 transition-all shadow-lg flex items-center space-x-2 border border-green-600">
+            <Send size={16} />
+            <span>Send Back to Dealer</span>
           </button>
-          <button onClick={handleDownloadPDF} disabled={downloading} className="px-8 py-4 bg-luxury-gold text-white rounded-full text-sm font-bold tracking-widest uppercase hover:bg-luxury-gold/90 transition-all shadow-lg flex items-center space-x-2 border border-luxury-gold-light disabled:opacity-50">
-            <Download size={16} />
-            <span>{downloading ? 'Generating...' : 'Download PDF'}</span>
-          </button>
+          <p className="text-xs text-luxury-ink/40 text-center max-w-md">After completing your information and signing, click "Send Back to Dealer" to generate a link you can send back so they can view the finalized document.</p>
         </motion.div>
       </main>
+
+      {/* Send to Dealer Modal */}
+      {showSendModal && (
+        <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4" onClick={() => setShowSendModal(false)}>
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95, y: 20 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            onClick={(e) => e.stopPropagation()}
+            className="bg-white rounded-2xl shadow-2xl max-w-lg w-full p-8 space-y-6"
+          >
+            <div className="text-center">
+              <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <Check size={24} className="text-green-700" />
+              </div>
+              <h3 className="text-2xl font-serif font-bold">Document Ready</h3>
+              <p className="text-sm text-luxury-ink/60 mt-2">Your information and signatures have been captured. Share this link with the dealer to complete the process.</p>
+            </div>
+
+            <div className="bg-luxury-bg rounded-xl p-4 space-y-3">
+              <label className="text-[10px] font-semibold tracking-widest uppercase text-luxury-ink/50">Return Link for Dealer</label>
+              <div className="flex items-center space-x-2">
+                <input type="text" readOnly value={dealerReturnLink} className="flex-1 px-3 py-2 bg-white border border-luxury-ink/10 rounded-lg text-xs font-mono text-luxury-ink/70 truncate" />
+                <button
+                  onClick={handleCopyReturnLink}
+                  className={`px-4 py-2 rounded-lg text-[10px] font-bold tracking-widest uppercase flex items-center space-x-1 transition-all ${
+                    copied ? 'bg-green-600 text-white' : 'bg-luxury-ink text-luxury-gold hover:bg-luxury-ink/90 border border-luxury-gold/30'
+                  }`}
+                >
+                  {copied ? <Check size={12} /> : <Copy size={12} />}
+                  <span>{copied ? 'Copied!' : 'Copy'}</span>
+                </button>
+              </div>
+            </div>
+
+            <div className="bg-luxury-bg/50 rounded-xl p-4 space-y-2">
+              <p className="text-[10px] font-semibold tracking-widest uppercase text-luxury-ink/50">What happens next:</p>
+              <ul className="text-xs text-luxury-ink/70 space-y-1.5">
+                <li className="flex items-start space-x-2">
+                  <span className="w-4 h-4 bg-green-100 text-green-700 rounded-full flex items-center justify-center text-[9px] font-bold mt-0.5 shrink-0">1</span>
+                  <span>Copy this link and send it to the dealer (text, email, etc.)</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <span className="w-4 h-4 bg-green-100 text-green-700 rounded-full flex items-center justify-center text-[9px] font-bold mt-0.5 shrink-0">2</span>
+                  <span>The dealer will see the completed document with both signatures</span>
+                </li>
+                <li className="flex items-start space-x-2">
+                  <span className="w-4 h-4 bg-green-100 text-green-700 rounded-full flex items-center justify-center text-[9px] font-bold mt-0.5 shrink-0">3</span>
+                  <span>Both parties can print or download the final document</span>
+                </li>
+              </ul>
+            </div>
+
+            <div className="border border-luxury-ink/10 rounded-xl p-4 bg-luxury-bg/30">
+              <p className="text-xs text-luxury-ink/50 text-center">You can also download your own copy using the "Preview" or "Download PDF" buttons above.</p>
+            </div>
+
+            <button onClick={() => setShowSendModal(false)} className="w-full py-3 bg-luxury-ink text-luxury-gold rounded-full text-sm font-bold tracking-widest uppercase hover:bg-luxury-ink/90 transition-all border border-luxury-gold/30">
+              Done
+            </button>
+          </motion.div>
+        </div>
+      )}
     </div>
   );
 }

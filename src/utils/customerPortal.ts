@@ -16,21 +16,23 @@ export interface CustomerLinkData {
 // Fields that the DEALER fills in for each section type
 const dealerFields: Record<CustomerSection, string[]> = {
   financing: [
-    'vehicleYear', 'vehicleMake', 'vehicleModel', 'vehicleVin', 'vehicleMileage',
+    'vehicleYear', 'vehicleMake', 'vehicleModel', 'vehicleVin', 'vehiclePlate', 'vehicleMileage',
     'cashPrice', 'downPayment', 'tax', 'titleFee', 'docFee',
     'apr', 'numberOfPayments', 'paymentFrequency', 'firstPaymentDate',
+    'dueAtSigning',
   ],
   rental: [
-    'vehicleYear', 'vehicleMake', 'vehicleModel', 'vehicleVin',
+    'vehicleYear', 'vehicleMake', 'vehicleModel', 'vehicleVin', 'vehiclePlate',
     'mileageOut', 'fuelLevelOut',
     'rentalRate', 'rentalPeriod', 'rentalStartDate', 'rentalEndDate',
     'securityDeposit', 'mileageAllowance', 'excessMileageCharge',
     'insuranceFee', 'additionalDriverFee', 'tax',
+    'dueAtSigning',
   ],
   billOfSale: [
     'saleDate', 'stockNumber',
     'vehicleYear', 'vehicleMake', 'vehicleModel', 'vehicleTrim',
-    'vehicleVin', 'vehicleColor', 'vehicleBodyStyle', 'vehicleMileage',
+    'vehicleVin', 'vehiclePlate', 'vehicleColor', 'vehicleBodyStyle', 'vehicleMileage',
     'odometerReading', 'odometerStatus',
     'salePrice', 'tradeInAllowance', 'tradeInDescription', 'tradeInVin', 'tradeInPayoff',
     'tax', 'titleFee', 'docFee', 'registrationFee', 'otherFees', 'otherFeesDescription',
@@ -124,4 +126,73 @@ export function mergeCustomerData(
   customerData: Record<string, unknown>,
 ): Record<string, unknown> {
   return { ...dealerData, ...customerData };
+}
+
+// === COMPLETED DOCUMENT (Customer → Dealer return trip) ===
+
+export interface CompletedLinkData {
+  s: CustomerSection;
+  dd: Record<string, unknown>; // dealer data
+  cd: Record<string, unknown>; // customer data
+  ds?: string;  // dealer signature
+  dsd?: string; // dealer signature date
+  bs?: string;  // buyer signature
+  bsd?: string; // buyer signature date
+  cs?: string;  // co-buyer signature
+  csd?: string; // co-buyer signature date
+  bi?: string;  // buyer ID photo
+}
+
+export function encodeCompletedLink(
+  section: CustomerSection,
+  dealerData: Record<string, unknown>,
+  customerData: Record<string, unknown>,
+  dealerSignature?: string,
+  dealerSignatureDate?: string,
+  buyerSignature?: string,
+  buyerSignatureDate?: string,
+  coBuyerSignature?: string,
+  coBuyerSignatureDate?: string,
+  buyerIdPhoto?: string,
+): string {
+  const payload: CompletedLinkData = {
+    s: section,
+    dd: dealerData,
+    cd: customerData,
+  };
+
+  // Include signatures if not too large (< 50KB each)
+  if (dealerSignature && dealerSignature.length < 50000) {
+    payload.ds = dealerSignature;
+    payload.dsd = dealerSignatureDate;
+  }
+  if (buyerSignature && buyerSignature.length < 50000) {
+    payload.bs = buyerSignature;
+    payload.bsd = buyerSignatureDate;
+  }
+  if (coBuyerSignature && coBuyerSignature.length < 50000) {
+    payload.cs = coBuyerSignature;
+    payload.csd = coBuyerSignatureDate;
+  }
+  // Include ID photo only if reasonably small (< 100KB)
+  if (buyerIdPhoto && buyerIdPhoto.length < 100000) {
+    payload.bi = buyerIdPhoto;
+  }
+
+  const json = JSON.stringify(payload);
+  const compressed = compressToEncodedURIComponent(json);
+  return `${window.location.origin}${window.location.pathname}#completed/${compressed}`;
+}
+
+export function decodeCompletedLink(hash: string): CompletedLinkData | null {
+  try {
+    const prefix = '#completed/';
+    if (!hash.startsWith(prefix)) return null;
+    const compressed = hash.slice(prefix.length);
+    const json = decompressFromEncodedURIComponent(compressed);
+    if (!json) return null;
+    return JSON.parse(json) as CompletedLinkData;
+  } catch {
+    return null;
+  }
 }

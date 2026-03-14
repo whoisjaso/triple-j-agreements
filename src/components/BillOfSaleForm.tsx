@@ -135,7 +135,10 @@ export default function BillOfSaleForm({ data, onChange }: Props) {
             {isDecoding ? 'Decoding...' : 'NHTSA VIN Decode'}
           </button>
         </div>
-        <InputField label="VIN" name="vehicleVin" uppercase={true} value={data.vehicleVin} onChange={handleChange} />
+        <div className="grid grid-cols-2 gap-4">
+          <InputField label="VIN" name="vehicleVin" uppercase={true} value={data.vehicleVin} onChange={handleChange} />
+          <InputField label="License Plate" name="vehiclePlate" uppercase={true} value={data.vehiclePlate} onChange={handleChange} />
+        </div>
         <div className="grid grid-cols-3 gap-4">
           <InputField label="Year" name="vehicleYear" value={data.vehicleYear} onChange={handleChange} />
           <InputField label="Make" name="vehicleMake" value={data.vehicleMake} onChange={handleChange} />

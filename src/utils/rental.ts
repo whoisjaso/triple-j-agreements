@@ -13,6 +13,7 @@ export interface RentalData {
   vehicleMake: string;
   vehicleModel: string;
   vehicleVin: string;
+  vehiclePlate: string;
   mileageOut: string;
   mileageIn: string;
   fuelLevelOut: string;
@@ -27,6 +28,7 @@ export interface RentalData {
   insuranceFee: number;
   additionalDriverFee: number;
   tax: number;
+  dueAtSigning: number;
 }
 
 export function calculateRentalDuration(

@@ -137,9 +137,17 @@ export default function BillOfSalePreview({ data, signatures }: Props) {
               </tr>
             </tbody>
           </table>
-          <div className="mt-3 text-sm">
-            <span className="text-luxury-ink/50 font-semibold text-[10px] tracking-widest uppercase">VIN: </span>
-            <span className="font-mono uppercase tracking-wider">{data.vehicleVin}</span>
+          <div className="mt-3 flex space-x-8 text-sm">
+            <div>
+              <span className="text-luxury-ink/50 font-semibold text-[10px] tracking-widest uppercase">VIN: </span>
+              <span className="font-mono uppercase tracking-wider">{data.vehicleVin}</span>
+            </div>
+            {data.vehiclePlate && (
+              <div>
+                <span className="text-luxury-ink/50 font-semibold text-[10px] tracking-widest uppercase">License Plate: </span>
+                <span className="font-mono uppercase tracking-wider">{data.vehiclePlate}</span>
+              </div>
+            )}
           </div>
         </div>
 

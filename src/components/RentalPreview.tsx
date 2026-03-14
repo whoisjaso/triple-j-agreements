@@ -53,7 +53,7 @@ export default function RentalPreview({ data, signatures }: Props) {
         </div>
 
         {/* Parties */}
-        <div className="grid grid-cols-2 gap-12 mb-10">
+        <div className="grid grid-cols-2 gap-12 mb-10 print-section">
           <div className="border border-luxury-ink/10 p-6 rounded-sm bg-luxury-bg/30">
             <h3 className="text-[10px] font-bold tracking-widest uppercase text-luxury-ink/50 mb-4">Renter Information</h3>
             <p className="font-serif text-xl mb-1 min-h-[1.75rem]">{data.renterName}</p>
@@ -73,7 +73,7 @@ export default function RentalPreview({ data, signatures }: Props) {
         </div>
 
         {/* Vehicle */}
-        <div className="mb-10">
+        <div className="mb-10 print-section">
           <h3 className="text-[10px] font-bold tracking-widest uppercase text-luxury-ink/50 mb-2">Vehicle Description</h3>
           <table className="w-full text-sm border-collapse">
             <thead>
@@ -82,8 +82,9 @@ export default function RentalPreview({ data, signatures }: Props) {
                 <th className="p-3 text-left font-semibold">Make</th>
                 <th className="p-3 text-left font-semibold">Model</th>
                 <th className="p-3 text-left font-semibold">VIN</th>
-                <th className="p-3 text-left font-semibold">Mileage Out</th>
-                <th className="p-3 text-left font-semibold">Mileage In</th>
+                <th className="p-3 text-left font-semibold">Plate</th>
+                <th className="p-3 text-left font-semibold">Mi. Out</th>
+                <th className="p-3 text-left font-semibold">Mi. In</th>
               </tr>
             </thead>
             <tbody>
@@ -92,6 +93,7 @@ export default function RentalPreview({ data, signatures }: Props) {
                 <td className="p-3">{data.vehicleMake}</td>
                 <td className="p-3">{data.vehicleModel}</td>
                 <td className="p-3 uppercase font-mono text-xs">{data.vehicleVin}</td>
+                <td className="p-3 uppercase font-mono text-xs">{data.vehiclePlate}</td>
                 <td className="p-3">{data.mileageOut}</td>
                 <td className="p-3">{data.mileageIn}</td>
               </tr>
@@ -110,7 +112,7 @@ export default function RentalPreview({ data, signatures }: Props) {
         </div>
 
         {/* Rental Summary Boxes (mirrors Truth in Lending) */}
-        <div className="mb-10">
+        <div className="mb-10 print-section">
           <h3 className="text-[10px] font-bold tracking-widest uppercase text-luxury-ink/50 mb-2">Rental Summary</h3>
           <div className="grid grid-cols-4 border-2 border-luxury-ink divide-x-2 divide-luxury-ink">
             <div className="p-4 flex flex-col justify-between">
@@ -137,15 +139,15 @@ export default function RentalPreview({ data, signatures }: Props) {
             <div className="p-4 flex flex-col justify-between">
               <div>
                 <div className="text-[10px] font-bold uppercase tracking-wider mb-1">Total Due at Signing</div>
-                <div className="text-[10px] text-luxury-ink/60 leading-tight">Total amount due including deposit, fees, and tax.</div>
+                <div className="text-[10px] text-luxury-ink/60 leading-tight">Amount due before vehicle pickup.</div>
               </div>
-              <div className="text-2xl font-serif font-bold mt-6">{formatCurrency(totals.totalDue)}</div>
+              <div className="text-2xl font-serif font-bold mt-6">{formatCurrency(data.dueAtSigning > 0 ? data.dueAtSigning : totals.totalDue)}</div>
             </div>
           </div>
         </div>
 
         {/* Payment Schedule Summary (mirrors Payment Schedule in Financing) */}
-        <div className="mb-10">
+        <div className="mb-10 print-section">
           <h3 className="text-[10px] font-bold tracking-widest uppercase text-luxury-ink/50 mb-2">Payment Schedule</h3>
           <table className="w-full text-sm border-collapse border border-luxury-ink/20">
             <thead>
@@ -170,7 +172,7 @@ export default function RentalPreview({ data, signatures }: Props) {
         </div>
 
         {/* Itemization & Policies (mirrors Itemization & Important Clauses) */}
-        <div className="grid grid-cols-2 gap-12 mb-12">
+        <div className="grid grid-cols-2 gap-12 mb-12 print-section">
           <div>
             <h3 className="text-[10px] font-bold tracking-widest uppercase text-luxury-ink/50 mb-4">Itemization of Charges</h3>
             <div className="space-y-3 text-sm">
@@ -204,7 +206,7 @@ export default function RentalPreview({ data, signatures }: Props) {
               </div>
               <div className="flex justify-between font-bold pt-1 text-lg font-serif">
                 <span>5. Total Due at Signing</span>
-                <span>{formatCurrency(totals.totalDue)}</span>
+                <span>{formatCurrency(data.dueAtSigning > 0 ? data.dueAtSigning : totals.totalDue)}</span>
               </div>
             </div>
           </div>
@@ -225,23 +227,65 @@ export default function RentalPreview({ data, signatures }: Props) {
           </div>
         </div>
 
-        {/* Terms */}
-        <div className="mb-16 text-[11px] text-justify space-y-3 text-luxury-ink/70 columns-2 gap-8">
-          <p>
-            <strong>RENTAL AGREEMENT:</strong> The renter agrees to rent the vehicle described above for the period of {formatDate(data.rentalStartDate)} through {formatDate(data.rentalEndDate)} at the rate of {formatCurrency(data.rentalRate)} per {data.rentalPeriod === 'Daily' ? 'day' : data.rentalPeriod === 'Weekly' ? 'week' : 'month'}.
-          </p>
-          <p>
-            <strong>AUTHORIZED DRIVERS:</strong> Only the renter and any additional authorized drivers listed in this agreement may operate the vehicle. All drivers must possess a valid driver's license. Unauthorized use voids all liability coverage.
-          </p>
-          <p>
-            <strong>LATE RETURN:</strong> If the vehicle is not returned by the agreed-upon return date, additional charges will be assessed at the applicable daily rate plus a late fee of $50.00 per day. Failure to return the vehicle within 48 hours of the agreed return date may be reported as unauthorized use.
-          </p>
-          <p>
-            <strong>PROHIBITED USE:</strong> The vehicle shall not be used for any illegal purpose, to tow or push anything, in any race or speed test, to carry persons or property for hire, off paved roads, or outside the state of Texas without prior written consent.
-          </p>
-          <p>
-            <strong>LIABILITY & INSURANCE:</strong> The renter assumes full liability for any damage to, loss of, or theft of the vehicle during the rental period. The renter must maintain adequate insurance coverage or purchase optional coverage offered by Triple J Auto Investment LLC.
-          </p>
+        {/* GPS Tracking Device Disclosure & Consent */}
+        <div className="mb-8 border-2 border-red-900/40 p-5 bg-red-50/30 print-section">
+          <h3 className="font-serif font-bold text-sm uppercase tracking-widest mb-3 text-center text-red-900">GPS Tracking Device — Disclosure & Consent</h3>
+          <div className="text-[10px] text-justify leading-relaxed space-y-2 text-red-900/80">
+            <p><strong>DISCLOSURE:</strong> Renter acknowledges and consents that the Vehicle is equipped with a Global Positioning System (GPS) electronic tracking device capable of identifying, monitoring, and recording the location of the Vehicle. This device is installed for the purposes of vehicle security, theft recovery, and enforcement of the terms of this Rental Agreement.</p>
+            <p><strong>CONSENT:</strong> By signing this Agreement, Renter provides express written consent pursuant to Texas Penal Code Section 16.06 for the installation and use of such device during the rental period.</p>
+            <p><strong>TAMPERING PROHIBITED:</strong> Renter agrees not to tamper with, disable, remove, or damage the GPS device. Any tampering with or removal of the GPS device shall constitute a material breach of this Agreement and Renter shall be liable for the cost of replacement plus any resulting damages.</p>
+          </div>
+        </div>
+
+        {/* Comprehensive Terms */}
+        <div className="mb-10 text-[10.5px] text-justify space-y-2.5 text-luxury-ink/70 columns-2 gap-8">
+          <p><strong>1. RENTAL AGREEMENT:</strong> Renter agrees to rent the Vehicle described above from Triple J Auto Investment LLC ("Owner") for the period of {formatDate(data.rentalStartDate)} through {formatDate(data.rentalEndDate)} at the rate of {formatCurrency(data.rentalRate)} per {data.rentalPeriod === 'Daily' ? 'day' : data.rentalPeriod === 'Weekly' ? 'week' : 'month'}. The Vehicle is and remains the property of Owner at all times during the rental period.</p>
+
+          <p><strong>2. AUTHORIZED DRIVERS:</strong> Only the Renter and any additional authorized drivers listed in this Agreement may operate the Vehicle. All drivers must possess a valid, unrestricted driver's license issued by a U.S. state. Unauthorized use by any person voids all coverage and constitutes a material breach. Renter is responsible for the actions of all authorized drivers.</p>
+
+          <p><strong>3. INSURANCE:</strong> Renter represents and warrants that Renter maintains, at minimum, automobile liability insurance meeting Texas mandatory minimum requirements ($30,000 bodily injury per person, $60,000 bodily injury per accident, $25,000 property damage) and comprehensive and collision coverage on the Vehicle during the entire rental period. Renter shall provide proof of insurance prior to taking possession. If Renter's insurance does not provide primary coverage for the rental Vehicle, Renter is personally liable for all damages, losses, and liabilities arising from the use and operation of the Vehicle.</p>
+
+          <p><strong>4. VEHICLE CONDITION:</strong> At the time of delivery, Owner and Renter shall jointly inspect the Vehicle and document its condition on the attached Vehicle Condition Report, including all existing damage, scratches, dents, mechanical condition, tire condition, and mileage. Renter acknowledges receiving the Vehicle in the condition described. Upon return, the Vehicle shall be inspected and any new damage not reflected on the original report shall be the sole responsibility of the Renter. If Renter is not present at the return inspection, Owner's determination of damage shall be presumed accurate absent clear and convincing evidence to the contrary.</p>
+
+          <p><strong>5. PROHIBITED USE:</strong> The Vehicle shall NOT be used for any of the following purposes, and any such use shall constitute a material breach: (a) by any unauthorized person; (b) by any person under the influence of alcohol, drugs, or any intoxicant; (c) for any illegal purpose, including transporting controlled substances; (d) for commercial purposes, ride-sharing (Uber, Lyft, etc.), delivery services, or hire unless expressly authorized in writing; (e) on unpaved roads, off-road, racing, speed contests, or any competition; (f) to tow or push any vehicle, trailer, or object; (g) outside the State of Texas without prior written consent; (h) by any person who does not possess a valid driver's license; (i) in a reckless or negligent manner; (j) while overloaded beyond manufacturer's recommended capacity; (k) in violation of any traffic law.</p>
+
+          <p><strong>6. LATE RETURN:</strong> If the Vehicle is not returned by 5:00 PM on the agreed return date, additional charges will be assessed at the applicable daily rate of {formatCurrency(data.rentalRate / (data.rentalPeriod === 'Daily' ? 1 : data.rentalPeriod === 'Weekly' ? 7 : 30))} plus a late fee of $50.00 per day. Failure to return the Vehicle within forty-eight (48) hours of the agreed return date may be reported to law enforcement as unauthorized use of a motor vehicle.</p>
+
+          <p><strong>7. LATE PAYMENT:</strong> If any rental payment is not received by 5:00 PM on the due date, a late fee of $25.00 per day shall be assessed until payment is received. A fee of $30.00 shall be assessed for any check, electronic payment, or other instrument returned or dishonored for any reason. Following a returned payment, Owner may require all future payments be made by cash, money order, or certified funds.</p>
+
+          <p><strong>8. ACCIDENT & THEFT REPORTING:</strong> In the event of any accident, collision, theft, vandalism, or damage to the Vehicle, Renter must: (a) immediately contact local law enforcement and obtain a police report; (b) notify Owner within twenty-four (24) hours by phone at (281) 253-3602 and in writing within forty-eight (48) hours; (c) not admit fault or liability to any third party; (d) cooperate fully with Owner, Owner's insurance carrier, and law enforcement in any investigation; (e) provide copies of the police report and all related documentation. Failure to comply with these reporting requirements may result in Renter's assumption of full liability for all damages and losses.</p>
+
+          <p><strong>9. TOWING & IMPOUND:</strong> If the Vehicle is towed, impounded, or seized by any governmental authority due to Renter's actions, negligence, or violation of law, Renter shall be solely responsible for all towing fees, impound fees, storage fees, administrative charges, and any fines or penalties. Renter shall notify Owner immediately. Owner reserves the right to recover the Vehicle from any impound facility, and Renter shall reimburse Owner for all costs incurred within five (5) days of demand.</p>
+
+          <p><strong>10. TOLL VIOLATIONS & CITATIONS:</strong> Renter is solely responsible for all toll charges, parking tickets, traffic citations, red-light camera violations, and any other fines or penalties incurred during the rental period. If Owner receives any such citation as the registered owner, Renter shall pay such amount plus an administrative fee of $25.00 per occurrence.</p>
+
+          <p><strong>11. MAINTENANCE:</strong> Renter shall maintain the Vehicle in good operating condition, including maintaining proper fluid levels, proper tire pressure, and not operating the Vehicle with any warning lights illuminated. Renter shall not make any mechanical repairs or modifications without Owner's prior written consent. If routine maintenance is needed during the rental period (e.g., oil change), Renter shall contact Owner to coordinate service.</p>
+
+          <p><strong>12. SMOKING & PET POLICY:</strong> Smoking of any kind (including cigarettes, cigars, e-cigarettes, and vaping devices) is strictly PROHIBITED in the Vehicle. Pets are NOT permitted in the Vehicle unless expressly authorized in writing by Owner. If evidence of smoking or unauthorized pet use is discovered, Renter shall be charged a cleaning/restoration fee of $300.00 in addition to any actual repair or restoration costs.</p>
+
+          <p><strong>13. KEY REPLACEMENT:</strong> Renter is responsible for all keys, key fobs, and remote devices provided with the Vehicle. Lost, stolen, or damaged keys must be reported immediately. Renter shall be charged the actual cost of key replacement, reprogramming, and any related locksmith services.</p>
+
+          <p><strong>14. VEHICLE BREAKDOWN:</strong> If the Vehicle experiences a mechanical breakdown due to no fault of the Renter, Renter shall immediately notify Owner. Owner will, at its option, arrange for repair or provide a substitute vehicle. Renter shall NOT attempt repairs or have repairs performed by any third party without Owner's prior written consent. If the breakdown is caused by Renter's misuse or neglect, all repair costs, towing costs, and related expenses shall be Renter's responsibility.</p>
+
+          <p><strong>15. OWNER'S RIGHT TO RECOVER VEHICLE:</strong> The Vehicle is and remains the property of Owner at all times. If Renter defaults under this Agreement, Owner may immediately terminate this Agreement and take possession of the Vehicle without prior notice or demand, wherever the Vehicle may be found, without liability for trespass or damages, provided Owner does not breach the peace. If the Vehicle is not returned within twenty-four (24) hours of demand, Owner may report the Vehicle as stolen to law enforcement.</p>
+
+          <p><strong>16. RIGHT TO INSPECT:</strong> Owner reserves the right to inspect the Vehicle at any reasonable time during the rental period upon twenty-four (24) hours' notice. Owner may inspect the Vehicle without notice if Owner has a reasonable belief that the Vehicle is being used in violation of this Agreement or is at risk of damage or loss.</p>
+
+          <p><strong>17. EARLY TERMINATION & DEFAULT:</strong> Renter may terminate this Agreement early by returning the Vehicle and paying all amounts owed through the date of return. Renter shall be in default if: (a) Renter fails to pay any amount when due; (b) Renter violates any term of this Agreement; (c) Renter fails to maintain required insurance; (d) Renter provides false information; (e) Renter abandons the Vehicle; (f) Renter is arrested while operating the Vehicle. Upon default, Owner may terminate this Agreement immediately, take possession of the Vehicle, and Renter shall be liable for all unpaid rental charges, damage, and costs of recovery.</p>
+
+          <p><strong>18. PERSONAL PROPERTY:</strong> Owner assumes no responsibility for loss of or damage to any personal property left in or on the Vehicle. Renter should remove all personal belongings before returning the Vehicle. Personal property not claimed within thirty (30) days of return may be disposed of at Owner's discretion.</p>
+
+          <p><strong>19. INDEMNIFICATION:</strong> Renter agrees to indemnify, defend, and hold harmless Owner, its owners, officers, employees, and agents from and against any and all claims, demands, losses, damages, liabilities, costs, and expenses (including reasonable attorney's fees) arising out of or related to: (a) Renter's use, operation, or possession of the Vehicle; (b) any accident, injury, or damage involving the Vehicle during the rental period; (c) any violation of law by Renter; (d) any breach of this Agreement. THIS INDEMNIFICATION INCLUDES CLAIMS ARISING FROM RENTER'S OWN NEGLIGENCE BUT DOES NOT APPLY TO CLAIMS ARISING SOLELY FROM OWNER'S GROSS NEGLIGENCE OR WILLFUL MISCONDUCT.</p>
+
+          <p><strong>20. GOVERNING LAW & JURISDICTION:</strong> This Agreement shall be governed by and construed in accordance with the laws of the State of Texas. Any dispute shall be subject to the exclusive jurisdiction of the state and federal courts located in Harris County, Texas.</p>
+
+          <p><strong>21. ENTIRE AGREEMENT:</strong> This Agreement, together with all addenda and disclosures signed by the parties (including the GPS Disclosure and Vehicle Condition Report), constitutes the entire agreement. No modification shall be valid unless in writing and signed by both parties.</p>
+
+          <p><strong>22. SEVERABILITY:</strong> If any provision of this Agreement is found invalid, illegal, or unenforceable, the remaining provisions shall continue in full force and effect.</p>
+
+          <p><strong>23. WAIVER:</strong> Owner's failure to enforce any term at any time shall not constitute a waiver of Owner's right to enforce that term or any other term. Acceptance of late payments shall not constitute a modification of this Agreement.</p>
+
+          <p><strong>24. SECURITY DEPOSIT:</strong> The security deposit of {formatCurrency(data.securityDeposit)} shall be held by Owner for the duration of the rental period. The deposit will be refunded within fourteen (14) days of Vehicle return, less any deductions for: (a) unpaid rental charges or fees; (b) damage to the Vehicle beyond normal wear and tear; (c) excessive cleaning required; (d) missing keys, accessories, or equipment; (e) fuel replacement to restore tank to delivery level; (f) toll violations or traffic citations received after return. Owner will provide an itemized statement of any deductions.</p>
         </div>
 
         {/* Customer ID Photo */}
@@ -256,7 +300,7 @@ export default function RentalPreview({ data, signatures }: Props) {
         )}
 
         {/* Signatures */}
-        <div className="space-y-12 bg-luxury-bg/30 p-8 border border-luxury-ink/10">
+        <div className="space-y-12 bg-luxury-bg/30 p-8 border border-luxury-ink/10 print-section">
           <div className="text-sm font-bold mb-8 text-center font-serif text-lg">
             By signing below, you agree to the terms of this rental agreement. You acknowledge that you have read it completely before signing.
           </div>

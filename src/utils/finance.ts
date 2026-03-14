@@ -11,6 +11,7 @@ export interface ContractData {
   vehicleMake: string;
   vehicleModel: string;
   vehicleVin: string;
+  vehiclePlate: string;
   vehicleMileage: string;
   cashPrice: number;
   downPayment: number;
@@ -21,6 +22,7 @@ export interface ContractData {
   numberOfPayments: number;
   paymentFrequency: 'Weekly' | 'Bi-weekly' | 'Monthly';
   firstPaymentDate: string;
+  dueAtSigning: number;
 }
 
 export function calculatePayment(

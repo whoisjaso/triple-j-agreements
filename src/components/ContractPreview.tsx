@@ -76,7 +76,7 @@ export default function ContractPreview({ data, signatures }: Props) {
         </div>
 
         {/* Parties */}
-        <div className="grid grid-cols-2 gap-12 mb-10">
+        <div className="grid grid-cols-2 gap-12 mb-10 print-section">
           <div className="border border-luxury-ink/10 p-6 rounded-sm bg-luxury-bg/30">
             <h3 className="text-[10px] font-bold tracking-widest uppercase text-luxury-ink/50 mb-4">Buyer Information</h3>
             <p className="font-serif text-xl mb-1 min-h-[1.75rem]">{data.buyerName}</p>
@@ -94,7 +94,7 @@ export default function ContractPreview({ data, signatures }: Props) {
         </div>
 
         {/* Vehicle */}
-        <div className="mb-10">
+        <div className="mb-10 print-section">
           <h3 className="text-[10px] font-bold tracking-widest uppercase text-luxury-ink/50 mb-2">Vehicle Description</h3>
           <table className="w-full text-sm border-collapse">
             <thead>
@@ -103,6 +103,7 @@ export default function ContractPreview({ data, signatures }: Props) {
                 <th className="p-3 text-left font-semibold">Make</th>
                 <th className="p-3 text-left font-semibold">Model</th>
                 <th className="p-3 text-left font-semibold">VIN</th>
+                <th className="p-3 text-left font-semibold">Plate</th>
                 <th className="p-3 text-left font-semibold">Mileage</th>
               </tr>
             </thead>
@@ -112,6 +113,7 @@ export default function ContractPreview({ data, signatures }: Props) {
                 <td className="p-3">{data.vehicleMake}</td>
                 <td className="p-3">{data.vehicleModel}</td>
                 <td className="p-3 uppercase font-mono text-xs">{data.vehicleVin}</td>
+                <td className="p-3 uppercase font-mono text-xs">{data.vehiclePlate}</td>
                 <td className="p-3">{data.vehicleMileage}</td>
               </tr>
             </tbody>
@@ -119,7 +121,7 @@ export default function ContractPreview({ data, signatures }: Props) {
         </div>
 
         {/* Truth in Lending */}
-        <div className="mb-10">
+        <div className="mb-10 print-section">
           <h3 className="text-[10px] font-bold tracking-widest uppercase text-luxury-ink/50 mb-2">Truth In Lending Disclosures</h3>
           <div className="grid grid-cols-4 border-2 border-luxury-ink divide-x-2 divide-luxury-ink">
             <div className="p-4 flex flex-col justify-between">
@@ -154,7 +156,7 @@ export default function ContractPreview({ data, signatures }: Props) {
         </div>
 
         {/* Payment Schedule Summary */}
-        <div className="mb-10">
+        <div className="mb-10 print-section">
           <h3 className="text-[10px] font-bold tracking-widest uppercase text-luxury-ink/50 mb-2">Payment Schedule</h3>
           <table className="w-full text-sm border-collapse border border-luxury-ink/20">
             <thead>
@@ -177,7 +179,7 @@ export default function ContractPreview({ data, signatures }: Props) {
         </div>
 
         {/* Itemization & Important Clauses */}
-        <div className="grid grid-cols-2 gap-12 mb-12">
+        <div className="grid grid-cols-2 gap-12 mb-12 print-section">
           <div>
             <h3 className="text-[10px] font-bold tracking-widest uppercase text-luxury-ink/50 mb-4">Itemization of Amount Financed</h3>
             <div className="space-y-3 text-sm">
@@ -228,23 +230,92 @@ export default function ContractPreview({ data, signatures }: Props) {
           </div>
         </div>
 
-        {/* Terms */}
-        <div className="mb-16 text-[11px] text-justify space-y-3 text-luxury-ink/70 columns-2 gap-8">
-          <p>
-            <strong>PROMISE TO PAY:</strong> You promise to pay us the principal amount of {formatCurrency(amountFinanced)} plus interest at the Annual Percentage Rate of {data.apr.toFixed(2)}% until paid in full. You will make payments according to the Payment Schedule above.
+        {/* Total Due at Signing */}
+        {data.dueAtSigning > 0 && (
+          <div className="mb-10 print-section">
+            <div className="border-2 border-luxury-gold bg-luxury-bg/40 p-6 text-center">
+              <h3 className="text-[10px] font-bold tracking-widest uppercase text-luxury-ink/50 mb-2">Total Due at Signing</h3>
+              <p className="text-4xl font-serif font-bold text-luxury-gold">{formatCurrency(data.dueAtSigning)}</p>
+              <p className="text-xs text-luxury-ink/60 mt-2">Amount due before vehicle delivery (includes down payment, fees, and any other charges due at time of sale)</p>
+            </div>
+          </div>
+        )}
+
+        {/* Texas Mandatory Buyer Notice */}
+        <div className="mb-8 border-2 border-luxury-ink p-5 bg-yellow-50/50 print-section">
+          <p className="text-xs font-bold text-center uppercase tracking-wider leading-relaxed">
+            NOTICE TO THE BUYER — DO NOT SIGN THIS CONTRACT BEFORE YOU READ IT OR IF IT CONTAINS ANY BLANK SPACES. YOU ARE ENTITLED TO A COPY OF THE CONTRACT YOU SIGN. UNDER THE LAW YOU HAVE THE RIGHT TO PAY OFF IN ADVANCE THE FULL AMOUNT DUE AND UNDER CERTAIN CONDITIONS MAY OBTAIN A PARTIAL REFUND OF THE FINANCE CHARGE. KEEP THIS CONTRACT TO PROTECT YOUR LEGAL RIGHTS.
           </p>
-          <p>
-            <strong>SECURITY INTEREST:</strong> You give us a security interest in the vehicle described above. This secures payment of all amounts you owe in this contract.
-          </p>
-          <p>
-            <strong>LATE CHARGE:</strong> If a payment is not received in full within 10 days after it is due, you will pay a late charge of 5% of the unpaid part of the payment or $25.00, whichever is less.
-          </p>
-          <p>
-            <strong>DEFAULT:</strong> You will be in default if you fail to make any payment when due. If you default, we may require you to pay at once the unpaid balance of the Amount Financed plus accrued interest, and we may repossess the vehicle.
-          </p>
-          <p>
-            <strong>OWNERSHIP & INSURANCE:</strong> You must keep the vehicle fully insured against loss or damage, with us named as the loss payee, until the Amount Financed is paid in full. You may not sell, transfer, or abandon the vehicle without our prior written consent.
-          </p>
+        </div>
+
+        {/* GPS Tracking Device Disclosure & Consent */}
+        <div className="mb-8 border-2 border-red-900/40 p-5 bg-red-50/30 print-section">
+          <h3 className="font-serif font-bold text-sm uppercase tracking-widest mb-3 text-center text-red-900">GPS Tracking & Starter Interrupt Device — Disclosure, Consent & Agreement</h3>
+          <div className="text-[10px] text-justify leading-relaxed space-y-2 text-red-900/80">
+            <p><strong>DISCLOSURE:</strong> Buyer acknowledges that a Global Positioning System (GPS) electronic tracking device and/or starter interrupt device has been or will be installed in the Vehicle described above. This device is capable of: (a) identifying, monitoring, and recording the geographic location of the Vehicle; and (b) remotely disabling the Vehicle's ignition/starter system.</p>
+            <p><strong>PURPOSE:</strong> The GPS device is installed for the purposes of: (a) protecting Seller/Holder's security interest in the Vehicle; (b) locating the Vehicle in the event of default or repossession; and (c) theft recovery.</p>
+            <p><strong>CONSENT:</strong> Pursuant to Texas Penal Code Section 16.06, Buyer hereby provides express written consent to the installation, maintenance, and use of the GPS tracking device and/or starter interrupt device on the Vehicle for the duration of this Retail Installment Contract.</p>
+            <p><strong>STARTER INTERRUPT:</strong> Buyer understands that if payments become past due, the starter interrupt device may prevent the Vehicle from restarting after the engine is turned off. The starter interrupt will NOT disable a Vehicle while it is in motion. Buyer will be provided with an emergency override code for safety situations.</p>
+            <p><strong>TAMPERING PROHIBITED:</strong> Buyer agrees not to alter, disconnect, remove, damage, or tamper with the GPS device or starter interrupt device. Any tampering constitutes a default under this Contract and Buyer shall be liable for the cost of replacement plus any resulting damages.</p>
+            <p><strong>DEVICE OWNERSHIP:</strong> The GPS device remains the property of Seller/Holder until this Contract is paid in full, at which time Buyer may request removal of the device at no charge.</p>
+            <p><strong>NO ADDITIONAL CHARGE:</strong> There is no separate charge to Buyer for the GPS device. The cost of the device is not included in the Amount Financed, Finance Charge, or any other charge disclosed in this Contract.</p>
+          </div>
+        </div>
+
+        {/* Comprehensive Terms */}
+        <div className="mb-10 text-[10.5px] text-justify space-y-2.5 text-luxury-ink/70 columns-2 gap-8">
+          <p><strong>1. PROMISE TO PAY:</strong> Buyer promises to pay Holder the principal amount of {formatCurrency(amountFinanced)} plus interest at the Annual Percentage Rate of {data.apr.toFixed(2)}% until paid in full. Buyer will make payments according to the Payment Schedule above. Buyer's obligation to make payments is absolute and unconditional and shall not be subject to any set-off, counterclaim, or defense.</p>
+
+          <p><strong>2. SECURITY INTEREST:</strong> Buyer grants Holder a purchase money security interest in the Vehicle described above and all accessions, accessories, and proceeds thereof. This security interest secures payment of all amounts owed under this Contract. Holder may file a financing statement (UCC-1) to perfect its security interest.</p>
+
+          <p><strong>3. LATE CHARGES:</strong> If any installment payment remains unpaid for more than fifteen (15) days after its scheduled due date, Holder may collect a delinquency charge of five percent (5%) of the unpaid installment amount. Only one delinquency charge may be collected on any single installment regardless of how long the payment remains unpaid, in accordance with Texas Finance Code Section 348.107.</p>
+
+          <p><strong>4. RETURNED PAYMENTS:</strong> A fee of $30.00 shall be assessed for any check, electronic payment, or other instrument returned or dishonored for any reason, including insufficient funds. Following a returned payment, Holder may require all future payments be made by cash, money order, or certified funds.</p>
+
+          <p><strong>5. DEFAULT:</strong> Buyer shall be in default if: (a) Buyer fails to make any payment when due; (b) Buyer fails to maintain required insurance coverage; (c) Buyer violates any term of this Contract; (d) Buyer provides false or misleading information; (e) Buyer abandons the Vehicle; (f) Buyer tampers with or removes the GPS/starter interrupt device; (g) Buyer sells, transfers, or encumbers the Vehicle without Holder's written consent; (h) Buyer makes unauthorized modifications to the Vehicle; or (i) Holder believes in good faith that the prospect of Buyer's payment or performance is impaired.</p>
+
+          <p><strong>6. ACCELERATION:</strong> Upon default, Holder may declare the entire unpaid balance of this Contract immediately due and payable. Upon acceleration, Buyer shall be entitled to a refund of the unearned portion of the finance charge as provided by Texas Finance Code Sections 348.120 or 348.121, as applicable.</p>
+
+          <p><strong>7. RIGHT TO CURE:</strong> Upon default, Holder may, at its sole discretion, provide Buyer written notice of default and a period of not less than ten (10) days to cure such default. Holder is not required by Texas law to provide notice before exercising remedies, but may elect to do so. If Buyer fails to cure the default within the cure period (if any is provided), Holder may exercise all remedies available under this Contract and applicable law.</p>
+
+          <p><strong>8. REPOSSESSION:</strong> Upon default or acceleration, Holder may take possession of the Vehicle wherever it may be found, without notice or demand, using peaceful means and without breach of the peace, as permitted by Chapter 9, Texas Business and Commerce Code, and Texas Finance Code Chapter 348. Buyer shall not hide, conceal, or refuse to surrender the Vehicle. Holder shall not enter any closed or locked structure to repossess the Vehicle and shall not use or threaten force. After repossession, Holder shall provide notice as required by law before disposing of the Vehicle. Buyer shall have the right to redeem the Vehicle before sale by paying the full unpaid balance plus all repossession costs, storage fees, and other lawful charges.</p>
+
+          <p><strong>9. DEFICIENCY BALANCE:</strong> If the Vehicle is sold after repossession and the proceeds of the sale, after deducting all costs of repossession, storage, repair, and sale, are less than the unpaid balance owed under this Contract, Buyer shall remain liable for the deficiency balance. Holder shall send written notice to Buyer of the sale and any deficiency balance as required by applicable law.</p>
+
+          <p><strong>10. PERSONAL PROPERTY AFTER REPOSSESSION:</strong> Any personal property found in the Vehicle after repossession will be handled in accordance with Texas Finance Code Section 348.407. Holder shall notify Buyer within fifteen (15) days of discovering personal property; Buyer has thirty-one (31) days to claim it.</p>
+
+          <p><strong>11. INSURANCE:</strong> Buyer agrees to maintain at all times during the term of this Contract: (a) comprehensive and collision insurance on the Vehicle with Holder named as lienholder/loss payee; and (b) liability insurance meeting or exceeding Texas minimum requirements ($30,000 bodily injury per person, $60,000 bodily injury per accident, $25,000 property damage). Buyer shall provide proof of insurance prior to delivery and within five (5) days of any policy renewal or change. If Buyer fails to maintain insurance, Holder may purchase force-placed insurance at Buyer's expense or declare Buyer in default.</p>
+
+          <p><strong>12. PREPAYMENT:</strong> Buyer may prepay this Contract in full at any time before the final installment is due without penalty. If Buyer prepays in full, Buyer is entitled to a refund credit of the unearned portion of the finance charge as computed under Texas Finance Code Section 348.120 or 348.121. Partial prepayments will be applied in accordance with this Contract and will not change the scheduled payment amounts or due dates unless Holder agrees in writing.</p>
+
+          <p><strong>13. UNAUTHORIZED MODIFICATIONS:</strong> Buyer shall not make or permit any material alterations or modifications to the Vehicle without Holder's prior written consent, including but not limited to: engine or transmission modifications, suspension changes, aftermarket wheels or tires that differ from manufacturer specifications, exhaust modifications, body modifications, or removal of emissions equipment. Any unauthorized modification constitutes a default.</p>
+
+          <p><strong>14. NO COOLING-OFF PERIOD:</strong> THERE IS NO COOLING-OFF PERIOD FOR THIS SALE. Under Texas law, once Buyer signs this Contract, Buyer is legally bound by its terms. Buyer does not have a right to return the Vehicle or cancel this Contract based on a change of mind, buyer's remorse, or dissatisfaction with the Vehicle. This sale is FINAL upon execution.</p>
+
+          <p><strong>15. VEHICLE CONDITION ACKNOWLEDGMENT:</strong> Buyer acknowledges that: (a) Buyer has inspected the Vehicle or has had the opportunity to have the Vehicle inspected by an independent mechanic; (b) Buyer is purchasing the Vehicle based on Buyer's own inspection and judgment, not in reliance upon any oral representations by Seller; (c) the Vehicle is a used motor vehicle and may have undiscoverable defects; (d) ALL REPRESENTATIONS REGARDING THE VEHICLE ARE CONTAINED IN THIS CONTRACT. NO ORAL REPRESENTATIONS OR WARRANTIES HAVE BEEN MADE THAT ARE NOT CONTAINED HEREIN.</p>
+
+          <p><strong>16. DOCUMENTARY FEE:</strong> A DOCUMENTARY FEE IS NOT AN OFFICIAL FEE. A DOCUMENTARY FEE IS NOT REQUIRED BY LAW BUT MAY BE CHARGED TO BUYERS FOR HANDLING DOCUMENTS RELATING TO THE SALE. A DOCUMENTARY FEE MAY NOT EXCEED A REASONABLE AMOUNT AGREED TO BY THE PARTIES.</p>
+
+          <p><strong>17. PAYMENT RECORDS:</strong> Holder's records of payments received shall be presumed accurate unless Buyer provides written evidence demonstrating otherwise. Buyer shall retain all payment receipts. Payment disputes must be raised in writing within sixty (60) days of the disputed payment.</p>
+
+          <p><strong>18. TOLL VIOLATIONS & CITATIONS:</strong> Buyer is solely responsible for all toll charges, parking tickets, traffic citations, red-light camera violations, and any fines or penalties incurred during the term of this Contract. If Holder receives any such citation as the registered owner/lienholder, Buyer shall reimburse Holder for all costs incurred.</p>
+
+          <p><strong>19. ATTORNEY FEES & COLLECTION COSTS:</strong> If Holder refers this Contract to an attorney for collection or enforcement, Buyer agrees to pay reasonable attorney's fees and all costs of collection, to the extent permitted by Texas law.</p>
+
+          <p><strong>20. GOVERNING LAW & JURISDICTION:</strong> This Contract shall be governed by and construed in accordance with the laws of the State of Texas. Any dispute arising out of or related to this Contract shall be subject to the exclusive jurisdiction of the state and federal courts located in Harris County, Texas.</p>
+
+          <p><strong>21. DISPUTE RESOLUTION:</strong> Prior to initiating any legal proceeding, the parties agree to attempt in good faith to resolve any dispute through informal negotiation for a period of thirty (30) days. If Buyer is a covered borrower under the Military Lending Act (10 U.S.C. 987), mandatory arbitration shall not apply.</p>
+
+          <p><strong>22. ENTIRE AGREEMENT:</strong> This Contract, together with all addenda, riders, and disclosures signed by the parties (including the GPS Disclosure, FTC Buyers Guide, and Odometer Disclosure), constitutes the entire agreement between Buyer and Seller regarding the purchase and financing of the Vehicle. No modification shall be valid unless in writing and signed by both parties.</p>
+
+          <p><strong>23. SEVERABILITY:</strong> If any provision of this Contract is found to be invalid, illegal, or unenforceable, such finding shall not affect the validity of the remaining provisions, which shall continue in full force and effect.</p>
+
+          <p><strong>24. WAIVER:</strong> Holder's failure to enforce any term of this Contract shall not constitute a waiver of Holder's right to enforce that term or any other term at any time. Acceptance of late payments or partial payments shall not constitute a waiver of Holder's right to demand timely payment in full.</p>
+        </div>
+
+        {/* ECOA Notice */}
+        <div className="mb-8 border border-luxury-ink/20 p-4 text-[9px] text-luxury-ink/50 text-justify leading-relaxed print-section">
+          <strong>EQUAL CREDIT OPPORTUNITY ACT NOTICE:</strong> The Federal Equal Credit Opportunity Act prohibits creditors from discriminating against credit applicants on the basis of race, color, religion, national origin, sex, marital status, age (provided the applicant has the capacity to enter into a binding contract), because all or part of the applicant's income derives from any public assistance program, or because the applicant has in good faith exercised any right under the Consumer Credit Protection Act. The federal agency that administers compliance with this law is: Consumer Financial Protection Bureau, 1700 G Street NW, Washington, DC 20552, (855) 411-2372.
         </div>
 
         {/* Customer ID Photo */}
@@ -259,7 +330,7 @@ export default function ContractPreview({ data, signatures }: Props) {
         )}
 
         {/* Signatures */}
-        <div className="space-y-12 bg-luxury-bg/30 p-8 border border-luxury-ink/10">
+        <div className="space-y-12 bg-luxury-bg/30 p-8 border border-luxury-ink/10 print-section">
           <div className="text-sm font-bold mb-8 text-center font-serif text-lg">
             By signing below, you agree to the terms of this contract. You acknowledge that you have read it completely before signing.
           </div>

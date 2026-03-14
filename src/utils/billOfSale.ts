@@ -31,6 +31,7 @@ export interface BillOfSaleData {
   vehicleModel: string;
   vehicleTrim: string;
   vehicleVin: string;
+  vehiclePlate: string;
   vehicleColor: string;
   vehicleBodyStyle: string;
   vehicleMileage: string;

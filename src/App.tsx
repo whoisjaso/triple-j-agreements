@@ -11,13 +11,14 @@ import BillOfSalePreview from './components/BillOfSalePreview';
 import Form130UForm from './components/Form130UForm';
 import Form130UPreview from './components/Form130UPreview';
 import CustomerPortal from './components/CustomerPortal';
+import CompletedDocumentView from './components/CompletedDocumentView';
 import { ContractData } from './utils/finance';
 import { RentalData } from './utils/rental';
 import { BillOfSaleData } from './utils/billOfSale';
 import { Form130UData, prefillFromBillOfSale } from './utils/form130U';
 import { SignatureData, emptySignatures } from './utils/shared';
 import SignatureBlock from './components/SignatureBlock';
-import { encodeCustomerLink, decodeCustomerLink, CustomerLinkData } from './utils/customerPortal';
+import { encodeCustomerLink, decodeCustomerLink, decodeCompletedLink, CustomerLinkData, CompletedLinkData } from './utils/customerPortal';
 
 type Section = 'financing' | 'rental' | 'billOfSale' | 'form130U';
 
@@ -34,6 +35,7 @@ const initialContractData: ContractData = {
   vehicleMake: '',
   vehicleModel: '',
   vehicleVin: '',
+  vehiclePlate: '',
   vehicleMileage: '',
   cashPrice: 0,
   downPayment: 0,
@@ -44,6 +46,7 @@ const initialContractData: ContractData = {
   numberOfPayments: 36,
   paymentFrequency: 'Monthly',
   firstPaymentDate: new Date().toISOString().split('T')[0],
+  dueAtSigning: 0,
 };
 
 const initialRentalData: RentalData = {
@@ -61,6 +64,7 @@ const initialRentalData: RentalData = {
   vehicleMake: '',
   vehicleModel: '',
   vehicleVin: '',
+  vehiclePlate: '',
   mileageOut: '',
   mileageIn: '',
   fuelLevelOut: 'Full',
@@ -75,6 +79,7 @@ const initialRentalData: RentalData = {
   insuranceFee: 0,
   additionalDriverFee: 0,
   tax: 0,
+  dueAtSigning: 0,
 };
 
 const initialBillOfSaleData: BillOfSaleData = {
@@ -103,6 +108,7 @@ const initialBillOfSaleData: BillOfSaleData = {
   vehicleModel: '',
   vehicleTrim: '',
   vehicleVin: '',
+  vehiclePlate: '',
   vehicleColor: '',
   vehicleBodyStyle: '',
   vehicleMileage: '',
@@ -192,6 +198,7 @@ const sectionLabels: Record<Section, string> = {
 
 export default function App() {
   const [customerMode, setCustomerMode] = useState<CustomerLinkData | null>(null);
+  const [completedMode, setCompletedMode] = useState<CompletedLinkData | null>(null);
   const [section, setSection] = useState<Section>('financing');
   const [contractData, setContractData] = useState<ContractData>(initialContractData);
   const [rentalData, setRentalData] = useState<RentalData>(initialRentalData);
@@ -205,7 +212,7 @@ export default function App() {
   const [copied, setCopied] = useState(false);
   const previewRef = useRef<HTMLDivElement>(null);
 
-  // Detect customer mode from URL hash
+  // Detect customer mode or completed mode from URL hash
   useEffect(() => {
     const checkHash = () => {
       const hash = window.location.hash;
@@ -213,6 +220,13 @@ export default function App() {
         const data = decodeCustomerLink(hash);
         if (data) {
           setCustomerMode(data);
+          setCompletedMode(null);
+        }
+      } else if (hash.startsWith('#completed/')) {
+        const data = decodeCompletedLink(hash);
+        if (data) {
+          setCompletedMode(data);
+          setCustomerMode(null);
         }
       }
     };
@@ -224,6 +238,11 @@ export default function App() {
   // If in customer mode, render the customer portal
   if (customerMode) {
     return <CustomerPortal linkData={customerMode} />;
+  }
+
+  // If in completed mode, render the finalized document with both parties' data
+  if (completedMode) {
+    return <CompletedDocumentView data={completedMode} />;
   }
 
   const handlePrint = () => {
@@ -444,7 +463,7 @@ export default function App() {
                 {section === 'rental' && <RentalForm data={rentalData} onChange={setRentalData} />}
                 {section === 'billOfSale' && <BillOfSaleForm data={billOfSaleData} onChange={setBillOfSaleData} />}
                 {section === 'form130U' && <Form130UForm data={form130UData} onChange={setForm130UData} onPrefill={handlePrefill130U} />}
-                <SignatureBlock signatures={signatures} onChange={setSignatures} />
+                <SignatureBlock signatures={signatures} onChange={setSignatures} mode="dealer" />
               </motion.div>
             )}
 

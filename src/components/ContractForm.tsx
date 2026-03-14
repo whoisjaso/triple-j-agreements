@@ -120,8 +120,9 @@ export default function ContractForm({ data, onChange }: Props) {
             {isDecoding ? 'Decoding...' : 'NHTSA VIN Decode'}
           </button>
         </div>
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-3 gap-4">
           <InputField label="VIN" name="vehicleVin" uppercase={true} value={data.vehicleVin} onChange={handleChange} />
+          <InputField label="License Plate" name="vehiclePlate" uppercase={true} value={data.vehiclePlate} onChange={handleChange} />
           <InputField label="Mileage" name="vehicleMileage" value={data.vehicleMileage} onChange={handleChange} />
         </div>
         <div className="grid grid-cols-3 gap-4">
@@ -157,6 +158,7 @@ export default function ContractForm({ data, onChange }: Props) {
           </div>
           <InputField label="First Payment" name="firstPaymentDate" type="date" min={new Date().toISOString().split('T')[0]} value={data.firstPaymentDate} onChange={handleChange} />
         </div>
+        <InputField label="Total Due at Signing ($)" name="dueAtSigning" type="number" min="0" value={data.dueAtSigning} onChange={handleChange} />
       </motion.div>
     </motion.div>
   );
