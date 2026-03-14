@@ -1,12 +1,16 @@
 import React from 'react';
 import { ContractData, calculatePayment, formatCurrency } from '../utils/finance';
 import { addWeeks, addMonths, format } from 'date-fns';
+import { SignatureData } from '../utils/shared';
+import { DEALER_LICENSE } from '../utils/shared';
+import SignatureLinePreview from './SignatureLinePreview';
 
 interface Props {
   data: ContractData;
+  signatures: SignatureData;
 }
 
-export default function ContractPreview({ data }: Props) {
+export default function ContractPreview({ data, signatures }: Props) {
   const totalCashPrice = data.cashPrice + data.tax + data.titleFee + data.docFee;
   const amountFinanced = Math.max(0, totalCashPrice - data.downPayment);
   const paymentAmount = calculatePayment(amountFinanced, data.apr, data.numberOfPayments, data.paymentFrequency);
@@ -243,37 +247,30 @@ export default function ContractPreview({ data }: Props) {
           </p>
         </div>
 
+        {/* Customer ID Photo */}
+        {signatures.buyerIdPhoto && (
+          <div className="mb-10 border border-luxury-ink/10 p-4 rounded-sm bg-luxury-bg/20 flex items-center space-x-6">
+            <img src={signatures.buyerIdPhoto} alt="Customer ID" className="h-28 object-contain rounded border border-luxury-ink/10" />
+            <div>
+              <p className="text-[10px] font-bold tracking-widest uppercase text-luxury-ink/50">Customer ID on File</p>
+              <p className="text-sm font-medium mt-1">{data.buyerName}</p>
+            </div>
+          </div>
+        )}
+
         {/* Signatures */}
         <div className="space-y-12 bg-luxury-bg/30 p-8 border border-luxury-ink/10">
           <div className="text-sm font-bold mb-8 text-center font-serif text-lg">
             By signing below, you agree to the terms of this contract. You acknowledge that you have read it completely before signing.
           </div>
-          
+
           <div className="grid grid-cols-2 gap-16">
-            <div>
-              <div className="border-b border-luxury-ink h-10 mb-2"></div>
-              <div className="flex justify-between text-[10px] uppercase tracking-widest font-semibold">
-                <span>Buyer Signature</span>
-                <span>Date</span>
-              </div>
-            </div>
-            <div>
-              <div className="border-b border-luxury-ink h-10 mb-2"></div>
-              <div className="flex justify-between text-[10px] uppercase tracking-widest font-semibold">
-                <span>Co-Buyer Signature</span>
-                <span>Date</span>
-              </div>
-            </div>
+            <SignatureLinePreview label="Buyer Signature" signatureImage={signatures.buyerSignature} signatureDate={signatures.buyerSignatureDate} printedName={data.buyerName} />
+            <SignatureLinePreview label="Co-Buyer Signature" signatureImage={signatures.coBuyerSignature} signatureDate={signatures.coBuyerSignatureDate} printedName={data.coBuyerName} />
           </div>
-          
+
           <div className="grid grid-cols-2 gap-16 mt-8">
-            <div>
-              <div className="border-b border-luxury-ink h-10 mb-2"></div>
-              <div className="flex justify-between text-[10px] uppercase tracking-widest font-semibold">
-                <span>Triple J Auto Representative</span>
-                <span>Date</span>
-              </div>
-            </div>
+            <SignatureLinePreview label={`Triple J Auto Representative — DL# ${DEALER_LICENSE}`} signatureImage={signatures.dealerSignature} signatureDate={signatures.dealerSignatureDate} />
           </div>
         </div>
 

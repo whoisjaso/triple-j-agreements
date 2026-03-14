@@ -1,6 +1,7 @@
 import React from 'react';
 import { ContractData } from '../utils/finance';
 import { motion } from 'motion/react';
+import AddressAutocomplete, { ParsedAddress } from './AddressAutocomplete';
 
 interface Props {
   data: ContractData;
@@ -91,7 +92,7 @@ export default function ContractForm({ data, onChange }: Props) {
       <motion.div variants={itemVariants} className="bg-white p-8 rounded-2xl shadow-xl shadow-luxury-ink/5 border border-luxury-ink/5 space-y-6">
         <h2 className="text-2xl font-serif text-luxury-ink border-b border-luxury-ink/10 pb-4 mb-6">Buyer Details</h2>
         <InputField label="Full Name" name="buyerName" value={data.buyerName} onChange={handleChange} />
-        <InputField label="Address" name="buyerAddress" value={data.buyerAddress} onChange={handleChange} />
+        <AddressAutocomplete label="Address" name="buyerAddress" value={data.buyerAddress} onChange={handleChange} onAddressSelect={(addr: ParsedAddress) => onChange({ ...data, buyerAddress: `${addr.street}, ${addr.city}, ${addr.state} ${addr.zip}` })} />
         <div className="grid grid-cols-2 gap-4">
           <InputField label="Phone" name="buyerPhone" value={data.buyerPhone} onChange={handleChange} />
           <InputField label="Email" name="buyerEmail" type="email" value={data.buyerEmail} onChange={handleChange} />
@@ -101,7 +102,7 @@ export default function ContractForm({ data, onChange }: Props) {
       <motion.div variants={itemVariants} className="bg-white p-8 rounded-2xl shadow-xl shadow-luxury-ink/5 border border-luxury-ink/5 space-y-6">
         <h2 className="text-2xl font-serif text-luxury-ink border-b border-luxury-ink/10 pb-4 mb-6">Co-Buyer Details</h2>
         <InputField label="Full Name" name="coBuyerName" value={data.coBuyerName} onChange={handleChange} />
-        <InputField label="Address" name="coBuyerAddress" value={data.coBuyerAddress} onChange={handleChange} />
+        <AddressAutocomplete label="Address" name="coBuyerAddress" value={data.coBuyerAddress} onChange={handleChange} onAddressSelect={(addr: ParsedAddress) => onChange({ ...data, coBuyerAddress: `${addr.street}, ${addr.city}, ${addr.state} ${addr.zip}` })} />
         <div className="grid grid-cols-2 gap-4">
           <InputField label="Phone" name="coBuyerPhone" value={data.coBuyerPhone} onChange={handleChange} />
           <InputField label="Email" name="coBuyerEmail" type="email" value={data.coBuyerEmail} onChange={handleChange} />
