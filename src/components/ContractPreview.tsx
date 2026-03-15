@@ -54,7 +54,7 @@ export default function ContractPreview({ data, signatures }: Props) {
 
       <div className="relative z-10">
         {/* Header */}
-        <div className="flex justify-between items-end border-b-2 border-luxury-ink pb-8 mb-10">
+        <div className="flex justify-between items-end border-b-2 border-luxury-ink pb-8 mb-10 print-section">
           <div className="flex items-center space-x-6">
             <div className="w-24 h-24 border-2 border-luxury-gold p-1 rounded-full overflow-hidden flex items-center justify-center bg-white">
               <img

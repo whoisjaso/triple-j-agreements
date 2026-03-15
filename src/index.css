@@ -16,6 +16,13 @@ body {
   font-family: var(--font-sans);
 }
 
+/* Page break avoidance — outside @media print so html2pdf also respects it.
+   break-inside only affects paged contexts; no effect on screen. */
+.print-section {
+  break-inside: avoid !important;
+  page-break-inside: avoid !important;
+}
+
 @media print {
   @page {
     margin: 0.4in 0.5in;
@@ -28,8 +35,10 @@ body {
     print-color-adjust: exact !important;
   }
 
-  .print-section {
-    break-inside: avoid !important;
-    page-break-inside: avoid !important;
+  /* Remove outer chrome for clean paper output */
+  .print-no-border {
+    box-shadow: none !important;
+    border: none !important;
+    border-radius: 0 !important;
   }
 }

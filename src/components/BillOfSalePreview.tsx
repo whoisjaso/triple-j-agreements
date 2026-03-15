@@ -35,7 +35,7 @@ export default function BillOfSalePreview({ data, signatures }: Props) {
 
       <div className="relative z-10">
         {/* Header */}
-        <div className="flex justify-between items-end border-b-2 border-luxury-ink pb-8 mb-10">
+        <div className="flex justify-between items-end border-b-2 border-luxury-ink pb-8 mb-10 print-section">
           <div className="flex items-center space-x-6">
             <div className="w-24 h-24 border-2 border-luxury-gold p-1 rounded-full overflow-hidden flex items-center justify-center bg-white">
               <img src="/logo.png" alt="Triple J Logo" className="w-full h-full object-contain" />
@@ -65,7 +65,7 @@ export default function BillOfSalePreview({ data, signatures }: Props) {
         </div>
 
         {/* Seller / Dealer */}
-        <div className="mb-10 border border-luxury-gold/30 p-6 rounded-sm bg-luxury-gold/5">
+        <div className="mb-10 border border-luxury-gold/30 p-6 rounded-sm bg-luxury-gold/5 print-section">
           <h3 className="text-[10px] font-bold tracking-widest uppercase text-luxury-gold mb-3">Seller (Dealer)</h3>
           <div className="grid grid-cols-3 gap-6 text-sm">
             <div>
@@ -85,7 +85,7 @@ export default function BillOfSalePreview({ data, signatures }: Props) {
         </div>
 
         {/* Buyer / Co-Buyer */}
-        <div className="grid grid-cols-2 gap-12 mb-10">
+        <div className="grid grid-cols-2 gap-12 mb-10 print-section">
           <div className="border border-luxury-ink/10 p-6 rounded-sm bg-luxury-bg/30">
             <h3 className="text-[10px] font-bold tracking-widest uppercase text-luxury-ink/50 mb-4">Buyer Information</h3>
             <p className="font-serif text-xl mb-1 min-h-[1.75rem]">{data.buyerName}</p>
@@ -111,7 +111,7 @@ export default function BillOfSalePreview({ data, signatures }: Props) {
         </div>
 
         {/* Vehicle Description */}
-        <div className="mb-10">
+        <div className="mb-10 print-section">
           <h3 className="text-[10px] font-bold tracking-widest uppercase text-luxury-ink/50 mb-2">Vehicle Description</h3>
           <table className="w-full text-sm border-collapse">
             <thead>
@@ -152,7 +152,7 @@ export default function BillOfSalePreview({ data, signatures }: Props) {
         </div>
 
         {/* Sale Summary Boxes (mirrors Truth in Lending) */}
-        <div className="mb-10">
+        <div className="mb-10 print-section">
           <h3 className="text-[10px] font-bold tracking-widest uppercase text-luxury-ink/50 mb-2">Sale Summary</h3>
           <div className="grid grid-cols-4 border-2 border-luxury-ink divide-x-2 divide-luxury-ink">
             <div className="p-4 flex flex-col justify-between">
@@ -187,7 +187,7 @@ export default function BillOfSalePreview({ data, signatures }: Props) {
         </div>
 
         {/* Itemization & Condition */}
-        <div className="grid grid-cols-2 gap-12 mb-12">
+        <div className="grid grid-cols-2 gap-12 mb-12 print-section">
           {/* Itemization */}
           <div>
             <h3 className="text-[10px] font-bold tracking-widest uppercase text-luxury-ink/50 mb-4">Itemization of Sale Price</h3>
@@ -310,7 +310,7 @@ export default function BillOfSalePreview({ data, signatures }: Props) {
         )}
 
         {/* Odometer Disclosure Statement */}
-        <div className="mb-10 border-2 border-luxury-ink p-6">
+        <div className="mb-10 border-2 border-luxury-ink p-6 print-section">
           <h3 className="font-serif font-bold text-lg uppercase tracking-widest mb-4 text-center">Federal Odometer Disclosure Statement</h3>
           <p className="text-xs text-justify leading-relaxed mb-4">
             In accordance with federal law (49 U.S.C. § 32705) and applicable state law, the seller hereby discloses that the odometer of the vehicle described herein reads <strong className="font-mono text-sm">{data.odometerReading || '___________'}</strong> miles, and to the best of the seller's knowledge, said odometer reading <strong>{odometerLabel}</strong>.
@@ -365,7 +365,7 @@ export default function BillOfSalePreview({ data, signatures }: Props) {
         )}
 
         {/* Signatures */}
-        <div className="space-y-12 bg-luxury-bg/30 p-8 border border-luxury-ink/10">
+        <div className="space-y-12 bg-luxury-bg/30 p-8 border border-luxury-ink/10 print-section">
           <div className="text-sm font-bold mb-8 text-center font-serif text-lg">
             By signing below, all parties acknowledge and agree to the terms set forth in this Bill of Sale. Each party confirms they have read and understood this document in its entirety.
           </div>

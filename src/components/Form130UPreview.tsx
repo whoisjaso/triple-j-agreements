@@ -46,7 +46,7 @@ export default function Form130UPreview({ data, signatures }: Props) {
       style={{ fontFamily: 'Arial, Helvetica, sans-serif', fontSize: '10px', padding: '0.3in 0.4in' }}>
 
       {/* === HEADER === */}
-      <div className="flex items-start justify-between border-b-2 border-black pb-2 mb-2">
+      <div className="flex items-start justify-between border-b-2 border-black pb-2 mb-2 print-section">
         <div className="flex items-center space-x-3">
           <div className="text-center leading-tight">
             <div className="text-[9px] font-bold">STATE OF TEXAS</div>
@@ -66,7 +66,7 @@ export default function Form130UPreview({ data, signatures }: Props) {
       </div>
 
       {/* === APPLICATION TYPE === */}
-      <div className="border border-black mb-2">
+      <div className="border border-black mb-2 print-section">
         <div className={sectionHeaderClass}>Applying For</div>
         <div className="px-2 py-1.5 flex flex-wrap gap-x-4 gap-y-0.5 text-[9px]">
           <label className="flex items-center">
@@ -89,7 +89,7 @@ export default function Form130UPreview({ data, signatures }: Props) {
       </div>
 
       {/* === VEHICLE DESCRIPTION (Fields 1-12) === */}
-      <div className="border border-black mb-2">
+      <div className="border border-black mb-2 print-section">
         <div className={sectionHeaderClass}>Vehicle Description</div>
         <table className="w-full border-collapse">
           <tbody>
@@ -161,7 +161,7 @@ export default function Form130UPreview({ data, signatures }: Props) {
       </div>
 
       {/* === APPLICANT / OWNER INFORMATION (Fields 14-21) === */}
-      <div className="border border-black mb-2">
+      <div className="border border-black mb-2 print-section">
         <div className={sectionHeaderClass}>Applicant / Owner Information</div>
         <table className="w-full border-collapse">
           <tbody>
@@ -266,7 +266,7 @@ export default function Form130UPreview({ data, signatures }: Props) {
       </div>
 
       {/* === PREVIOUS OWNER / SELLER (Field 22) === */}
-      <div className="border border-black mb-2">
+      <div className="border border-black mb-2 print-section">
         <div className={sectionHeaderClass}>Previous Owner / Seller</div>
         <table className="w-full border-collapse">
           <tbody>
@@ -289,7 +289,7 @@ export default function Form130UPreview({ data, signatures }: Props) {
       </div>
 
       {/* === VEHICLE LOCATION (Field 23) === */}
-      <div className="border border-black mb-2">
+      <div className="border border-black mb-2 print-section">
         <div className={sectionHeaderClass}>Vehicle Location Address (if different from mailing)</div>
         <table className="w-full border-collapse">
           <tbody>
@@ -320,7 +320,7 @@ export default function Form130UPreview({ data, signatures }: Props) {
       </div>
 
       {/* === MOTOR VEHICLE TAX STATEMENT === */}
-      <div className="border border-black mb-2">
+      <div className="border border-black mb-2 print-section">
         <div className={sectionHeaderClass}>Motor Vehicle Sales / Use Tax Statement</div>
         <table className="w-full border-collapse">
           <tbody>
@@ -399,7 +399,7 @@ export default function Form130UPreview({ data, signatures }: Props) {
       )}
 
       {/* === FIRST LIENHOLDER (Field 34) === */}
-      <div className="border border-black mb-2">
+      <div className="border border-black mb-2 print-section">
         <div className={sectionHeaderClass}>First Lienholder</div>
         <table className="w-full border-collapse">
           <tbody>
@@ -459,7 +459,7 @@ export default function Form130UPreview({ data, signatures }: Props) {
       )}
 
       {/* === CERTIFICATION & SIGNATURES === */}
-      <div className="border-2 border-black mb-2 mt-3">
+      <div className="border-2 border-black mb-2 mt-3 print-section">
         <div className="bg-black text-white text-[8px] font-bold uppercase tracking-wider px-2 py-1.5 text-center">
           Certification
         </div>
