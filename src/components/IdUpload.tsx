@@ -11,7 +11,39 @@ export default function IdUpload({ label, value, onChange }: Props) {
   const fileRef = useRef<HTMLInputElement>(null);
   const cameraRef = useRef<HTMLInputElement>(null);
 
-  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const resizeImage = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const img = new Image();
+        img.onload = () => {
+          const MAX = 1200;
+          let { width, height } = img;
+          if (width > MAX || height > MAX) {
+            if (width > height) {
+              height = Math.round((height * MAX) / width);
+              width = MAX;
+            } else {
+              width = Math.round((width * MAX) / height);
+              height = MAX;
+            }
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d')!;
+          ctx.drawImage(img, 0, 0, width, height);
+          resolve(canvas.toDataURL('image/jpeg', 0.7));
+        };
+        img.onerror = reject;
+        img.src = reader.result as string;
+      };
+      reader.onerror = reject;
+      reader.readAsDataURL(file);
+    });
+  };
+
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
@@ -20,11 +52,12 @@ export default function IdUpload({ label, value, onChange }: Props) {
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      onChange(reader.result as string);
-    };
-    reader.readAsDataURL(file);
+    try {
+      const resized = await resizeImage(file);
+      onChange(resized);
+    } catch {
+      alert('Failed to process image. Please try again.');
+    }
     e.target.value = '';
   };
 

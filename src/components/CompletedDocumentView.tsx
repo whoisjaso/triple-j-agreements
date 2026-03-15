@@ -51,7 +51,13 @@ export default function CompletedDocumentView({ data }: Props) {
 
   const handleDownloadPDF = async () => {
     setDownloading(true);
-    await new Promise(r => setTimeout(r, 500));
+
+    await new Promise<void>((resolve) => {
+      setTimeout(() => {
+        requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+      }, 500);
+    });
+
     const el = previewRef.current;
     if (!el) { setDownloading(false); return; }
     const name = getClientName();
@@ -60,12 +66,22 @@ export default function CompletedDocumentView({ data }: Props) {
     try {
       const opt = {
         margin: 0, filename,
-        image: { type: 'jpeg' as const, quality: 0.95 },
-        html2canvas: { scale: 1.5, useCORS: true, logging: false },
+        image: { type: 'jpeg' as const, quality: 0.85 },
+        html2canvas: {
+          scale: 1.5,
+          useCORS: true,
+          logging: false,
+          onclone: (clonedDoc: Document) => {
+            clonedDoc.querySelectorAll('[data-pdf-skip]').forEach((node) => node.remove());
+          },
+        },
         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' as const },
         pagebreak: { mode: ['css', 'legacy'] },
       };
       await html2pdf().set(opt).from(el).save();
+    } catch (err) {
+      console.error('PDF generation failed:', err);
+      alert('PDF generation failed. Please try using the Print button instead.');
     } finally {
       setDownloading(false);
     }
@@ -79,10 +95,11 @@ export default function CompletedDocumentView({ data }: Props) {
   return (
     <div className="min-h-screen bg-luxury-bg">
       {downloading && (
-        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] flex items-center justify-center">
+        <div className="fixed inset-0 bg-black/50 z-[100] flex items-center justify-center">
           <div className="bg-white rounded-2xl p-8 shadow-2xl flex flex-col items-center space-y-4">
             <div className="w-10 h-10 border-4 border-luxury-gold/30 border-t-luxury-gold rounded-full animate-spin" />
             <p className="text-sm font-semibold tracking-widest uppercase text-luxury-ink/70">Generating PDF...</p>
+            <p className="text-xs text-luxury-ink/40">This may take a few seconds</p>
           </div>
         </div>
       )}
