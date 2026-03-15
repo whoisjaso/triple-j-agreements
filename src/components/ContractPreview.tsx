@@ -49,7 +49,7 @@ export default function ContractPreview({ data, signatures }: Props) {
     <div className="bg-white p-10 md:p-16 text-luxury-ink font-sans max-w-5xl mx-auto relative">
       {/* Watermark / Background Logo */}
       <div className="absolute inset-0 flex items-center justify-center opacity-[0.02] pointer-events-none overflow-hidden">
-        <div className="font-serif font-bold text-[400px] leading-none">JJJ</div>
+        <div className="font-serif font-bold text-[120px] leading-none">JJJ</div>
       </div>
 
       <div className="relative z-10">

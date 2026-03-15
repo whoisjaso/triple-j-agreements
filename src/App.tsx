@@ -245,8 +245,12 @@ export default function App() {
     return <CompletedDocumentView data={completedMode} />;
   }
 
-  const handlePrint = () => {
+  const handlePrint = async () => {
+    const prevView = view;
+    setView('preview');
+    await new Promise(r => setTimeout(r, 400));
     window.print();
+    setView(prevView);
   };
 
   const getClientName = () => {
@@ -264,7 +268,7 @@ export default function App() {
     const prevView = view;
     setView('preview');
 
-    await new Promise((r) => setTimeout(r, 300));
+    await new Promise((r) => setTimeout(r, 500));
 
     const element = previewRef.current;
     if (!element) {
@@ -278,8 +282,8 @@ export default function App() {
     const opt = {
       margin: 0,
       filename,
-      image: { type: 'jpeg' as const, quality: 0.98 },
-      html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+      image: { type: 'jpeg' as const, quality: 0.95 },
+      html2canvas: { scale: 1.5, useCORS: true, logging: false },
       jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' as const },
       pagebreak: { mode: ['css', 'legacy'] },
     };
@@ -572,6 +576,16 @@ export default function App() {
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* PDF Generation Overlay */}
+      {downloading && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] flex items-center justify-center">
+          <div className="bg-white rounded-2xl p-8 shadow-2xl flex flex-col items-center space-y-4">
+            <div className="w-10 h-10 border-4 border-luxury-gold/30 border-t-luxury-gold rounded-full animate-spin" />
+            <p className="text-sm font-semibold tracking-widest uppercase text-luxury-ink/70">Generating PDF...</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

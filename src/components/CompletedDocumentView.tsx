@@ -51,7 +51,7 @@ export default function CompletedDocumentView({ data }: Props) {
 
   const handleDownloadPDF = async () => {
     setDownloading(true);
-    await new Promise(r => setTimeout(r, 300));
+    await new Promise(r => setTimeout(r, 500));
     const el = previewRef.current;
     if (!el) { setDownloading(false); return; }
     const name = getClientName();
@@ -60,8 +60,8 @@ export default function CompletedDocumentView({ data }: Props) {
     try {
       const opt = {
         margin: 0, filename,
-        image: { type: 'jpeg' as const, quality: 0.98 },
-        html2canvas: { scale: 2, useCORS: true, letterRendering: true },
+        image: { type: 'jpeg' as const, quality: 0.95 },
+        html2canvas: { scale: 1.5, useCORS: true, logging: false },
         jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' as const },
         pagebreak: { mode: ['css', 'legacy'] },
       };
@@ -78,6 +78,14 @@ export default function CompletedDocumentView({ data }: Props) {
 
   return (
     <div className="min-h-screen bg-luxury-bg">
+      {downloading && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-[100] flex items-center justify-center">
+          <div className="bg-white rounded-2xl p-8 shadow-2xl flex flex-col items-center space-y-4">
+            <div className="w-10 h-10 border-4 border-luxury-gold/30 border-t-luxury-gold rounded-full animate-spin" />
+            <p className="text-sm font-semibold tracking-widest uppercase text-luxury-ink/70">Generating PDF...</p>
+          </div>
+        </div>
+      )}
       {/* Header */}
       <div className="bg-luxury-bg/80 backdrop-blur-md border-b border-luxury-ink/10 sticky top-0 z-10 print:hidden">
         <div className="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
